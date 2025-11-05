@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="ko" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>정광섭 | 게임 CS/CM 포트폴리오</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Deep Red Accent -->
+    <!-- Application Structure Plan: A single-page application with a fixed top navigation bar for smooth scrolling between sections. This structure was chosen to provide a fluid, narrative-like user experience, allowing recruiters to easily navigate through the candidate's story, from their core identity to their tangible achievements. Key successes are grouped into an interactive "Projects" section and a visual "Key Achievements" chart to immediately draw attention to impactful results, which is more effective than a purely text-based format. -->
+    <!-- Visualization & Content Choices: 1. Report Info: Quantitative achievements from work experience (e.g., 업무 정확성 향상, 온보딩 기간 단축). Goal: Visually summarize data-driven accomplishments. Viz/Presentation Method: Horizontal Bar Chart using Chart.js (Canvas) to represent abstract improvements. Interaction: Tooltips on hover display the specific achievement. Justification: This transforms text-based metrics into a single, powerful, and easily comparable visual summary, highlighting the candidate's impact at a glance. 2. Report Info: Success Stories. Goal: Present detailed case studies in an organized and engaging manner. Viz/Presentation Method: A responsive card-based grid. Interaction: A "자세히 보기" (View Details) button on each card opens a modal window displaying the S-A-R (Situation-Action-Result) breakdown. Justification: This pattern maintains a clean overview while allowing users to delve deeper into projects, enhancing user-directed exploration. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background-color: #FDFBF8;
+            color: #383838;
+        }
+        .nav-link {
+            transition: color 0.3s, border-bottom-color 0.3s;
+            border-bottom: 2px solid transparent;
+        }
+        .nav-link:hover, .nav-link.active {
+            color: #AC0C0A;
+            border-bottom-color: #AC0C0A;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 450px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 450px;
+            }
+        }
+        .modal-backdrop {
+            transition: opacity 0.3s ease-in-out;
+        }
+        .modal-content {
+            transition: transform 0.3s ease-in-out;
+        }
+        .card-hover {
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .card-hover:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.07), 0 4px 6px -2px rgba(0,0,0,0.05);
+        }
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -29px;
+            top: 4px;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background-color: #AC0C0A;
+            border: 3px solid #FDFBF8;
+        }
+    </style>
+</head>
+<body class="antialiased">
+    <header class="bg-white/80 backdrop-blur-lg fixed top-0 left-0 right-0 z-50 shadow-sm">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <h1 class="text-xl font-bold text-[#AC0C0A]">정광섭's Portfolio</h1>
+            <nav class="hidden md:flex space-x-8">
+                <a href="#about" class="nav-link font-medium pb-1">소개</a>
+                <a href="#skills" class="nav-link font-medium pb-1">보유 역량</a>
+                <a href="#tech-skills" class="nav-link font-medium pb-1">보유 기술</a>
+                <a href="#experience" class="nav-link font-medium pb-1">업무 경험</a>
+                <a href="#portfolio" class="nav-link font-medium pb-1">성공 사례</a>
+                <a href="#achievements" class="nav-link font-medium pb-1">주요 성과</a>
+            </nav>
+            <button id="mobile-menu-button" class="md:hidden text-2xl text-[#AC0C0A]">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+        <div id="mobile-menu" class="hidden md:hidden bg-white px-6 pb-4">
+            <a href="#about" class="block py-2 text-center nav-link">소개</a>
+            <a href="#skills" class="block py-2 text-center nav-link">보유 역량</a>
+            <a href="#tech-skills" class="block py-2 text-center nav-link">보유 기술</a>
+            <a href="#experience" class="block py-2 text-center nav-link">업무 경험</a>
+            <a href="#portfolio" class="block py-2 text-center nav-link">성공 사례</a>
+            <a href="#achievements" class="block py-2 text-center nav-link">주요 성과</a>
+        </div>
+    </header>
+
+    <main class="pt-20">
+        <section id="about" class="min-h-screen container mx-auto px-6 py-16 flex flex-col items-center justify-center text-center">
+            <div class="max-w-4xl">
+                <h2 class="text-5xl md:text-6xl font-bold mb-4 tracking-tight">
+                    정광섭
+                </h2>
+                <p class="text-xl md:text-2xl text-[#AC0C0A] mb-8">
+                    유저의 목소리에서 게임의 성장 기회를 발견하는 게임 전문가
+                </p>
+                <p class="text-lg text-gray-700 leading-relaxed mb-12">
+                    지난 7년간 게임업계에서 CS 및 CM으로 근무하며 1:1 문의, 이메일, 게시판 등 다양한 채널의 고객 응대에 능숙합니다. 특히 여러 장르의 게임을 경험하며 고객의 니즈를 신속하게 파악하고 효과적인 해결책을 제시하여 높은 고객 만족도를 이끌어낸 경험이 있습니다. 단순 문의 응대를 넘어 데이터 기반의 유저 동향을 분석하고, 팀 내 업무 효율화를 위한 자료를 제작, 공유하며 업무 프로세스 개선에 기여했습니다. 이러한 경험을 토대로 유저와 원활히 소통하며 긍정적인 커뮤니티 문화를 만들어 가는 데 자신 있습니다.
+                </p>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 text-left bg-white p-8 rounded-xl shadow-sm border border-gray-100 w-full">
+                    <div class="info-item">
+                        <h3 class="font-bold text-lg mb-2 flex items-center"><i class="fas fa-user mr-3 text-[#AC0C0A]"></i>이름</h3>
+                        <p class="text-gray-600">정광섭</p>
+                    </div>
+                    <div class="info-item">
+                        <h3 class="font-bold text-lg mb-2 flex items-center"><i class="fas fa-phone mr-3 text-[#AC0C0A]"></i>연락처</h3>
+                        <p class="text-gray-600">010-9924-6305</p>
+                    </div>
+                    <div class="info-item">
+                        <h3 class="font-bold text-lg mb-2 flex items-center"><i class="fas fa-envelope mr-3 text-[#AC0C0A]"></i>이메일</h3>
+                        <p class="text-gray-600">wrt1324@gmail.com</p>
+                    </div>
+                    <div class="info-item">
+                        <h3 class="font-bold text-lg mb-2 flex items-center"><i class="fas fa-gamepad mr-3 text-[#AC0C0A]"></i>선호 장르</h3>
+                        <p class="text-gray-600">리듬, FPS, 방치형, 수집형 RPG</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="skills" class="py-20 bg-white">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h2 class="text-4xl font-bold">보유 역량</h2>
+                    <p class="text-lg text-gray-600 mt-2">게임과 유저를 연결하는 전문적인 스킬셋</p>
+                </div>
+                <div class="grid md:grid-cols-2 gap-12">
+                    <div>
+                        <h3 class="text-2xl font-bold mb-6 text-center text-[#AC0C0A]">Hard Skills</h3>
+                        <div class="space-y-4">
+                            <div class="bg-gray-50 p-4 rounded-lg flex items-start"><i class="fas fa-tools text-xl text-[#AC0C0A] mt-1 mr-4"></i><div><h4 class="font-bold text-lg">게임 운영 툴</h4><p class="text-gray-600">내부 어드민 툴, 유저 데이터 조회, 아이템 지급/회수</p></div></div>
+                            <div class="bg-gray-50 p-4 rounded-lg flex items-start"><i class="fab fa-discord text-xl text-[#AC0C0A] mt-1 mr-4"></i><div><h4 class="font-bold text-lg">커뮤니티 관리 툴</h4><p class="text-gray-600">네이버 라운지/카페, Discord</p></div></div>
+                            <div class="bg-gray-50 p-4 rounded-lg flex items-start"><i class="fas fa-headset text-xl text-[#AC0C0A] mt-1 mr-4"></i><div><h4 class="font-bold text-lg">CS/티켓팅 시스템</h4><p class="text-gray-600">내부 문의 툴, Zendesk</p></div></div>
+                            <div class="bg-gray-50 p-4 rounded-lg flex items-start"><i class="fas fa-chart-line text-xl text-[#AC0C0A] mt-1 mr-4"></i><div><h4 class="font-bold text-lg">데이터 분석</h4><p class="text-gray-600">VOC 분석, 커뮤니티 동향 리포팅, 주/월간 보고서</p></div></div>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="text-2xl font-bold mb-6 text-center text-[#AC0C0A]">Soft Skills</h3>
+                        <div class="space-y-4">
+                            <div class="bg-gray-50 p-4 rounded-lg flex items-start"><i class="fas fa-heart text-xl text-[#AC0C0A] mt-1 mr-4"></i><div><h4 class="font-bold text-lg">높은 게임 이해도와 열정</h4><p class="text-gray-600">깊이 있는 장르 지식 및 게임 시스템 이해</p></div></div>
+                            <div class="bg-gray-50 p-4 rounded-lg flex items-start"><i class="fas fa-shield-alt text-xl text-[#AC0C0A] mt-1 mr-4"></i><div><h4 class="font-bold text-lg">위기관리 능력</h4><p class="text-gray-600">커뮤니티 여론 신속 파악, 잠재적 이슈 선제적 대비</p></div></div>
+                            <div class="bg-gray-50 p-4 rounded-lg flex items-start"><i class="fas fa-comments text-xl text-[#AC0C0A] mt-1 mr-4"></i><div><h4 class="font-bold text-lg">탁월한 커뮤니케이션</h4><p class="text-gray-600">이슈의 근본 원인 파악 및 유관 부서 협력 해결</p></div></div>
+                            <div class="bg-gray-50 p-4 rounded-lg flex items-start"><i class="fas fa-battery-full text-xl text-[#AC0C0A] mt-1 mr-4"></i><div><h4 class="font-bold text-lg">스트레스 관리 및 회복탄력성</h4><p class="text-gray-600">악성 민원 및 돌발 상황에서 침착하고 안정적인 대응</p></div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="tech-skills" class="py-20">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h2 class="text-4xl font-bold">보유 기술</h2>
+                    <p class="text-lg text-gray-600 mt-2">업무 효율을 높이는 기술 스택</p>
+                </div>
+                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8 text-center">
+                    <div class="bg-white p-6 rounded-lg shadow-sm card-hover flex flex-col items-center justify-center">
+                        <i class="fas fa-file-excel text-4xl text-[#AC0C0A] mb-4"></i>
+                        <h4 class="font-bold text-lg">MS Excel</h4>
+                        <p class="text-gray-500">상 (VBA)</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-sm card-hover flex flex-col items-center justify-center">
+                        <i class="fas fa-table text-4xl text-[#AC0C0A] mb-4"></i>
+                        <h4 class="font-bold text-lg">Google Sheet</h4>
+                        <p class="text-gray-500">상 (Script)</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-sm card-hover flex flex-col items-center justify-center">
+                        <i class="fas fa-file-powerpoint text-4xl text-[#AC0C0A] mb-4"></i>
+                        <h4 class="font-bold text-lg">Powerpoint</h4>
+                        <p class="text-gray-500">중상</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-sm card-hover flex flex-col items-center justify-center">
+                        <i class="fas fa-image text-4xl text-[#AC0C0A] mb-4"></i>
+                        <h4 class="font-bold text-lg">Photoshop</h4>
+                        <p class="text-gray-500">중상</p>
+                    </div>
+                     <div class="bg-white p-6 rounded-lg shadow-sm card-hover flex flex-col items-center justify-center">
+                        <i class="fas fa-video text-4xl text-[#AC0C0A] mb-4"></i>
+                        <h4 class="font-bold text-lg">Premiere</h4>
+                        <p class="text-gray-500">중</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-sm card-hover flex flex-col items-center justify-center">
+                        <i class="fas fa-code text-4xl text-[#AC0C0A] mb-4"></i>
+                        <h4 class="font-bold text-lg">Programming</h4>
+                        <p class="text-gray-500">C#, Python, Java</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="experience" class="py-20 bg-white">
+            <div class="container mx-auto px-6">
+                 <div class="text-center mb-16">
+                    <h2 class="text-4xl font-bold">업무 경험</h2>
+                    <p class="text-lg text-gray-600 mt-2">유저와 함께 게임을 성장시킨 7년의 기록</p>
+                </div>
+                <div class="relative border-l-2 border-[#AC0C0A]/30 max-w-3xl mx-auto">
+                    <div class="mb-12 pl-10 relative timeline-item">
+                        <p class="text-sm text-gray-500 mb-1">2023.05 ~ 2025.06</p>
+                        <h3 class="text-2xl font-bold">핸디 커뮤니케이션즈</h3>
+                        <p class="text-lg text-gray-700 font-medium mb-4">서비스운영실 | 사원</p>
+                        <ul class="list-disc pl-5 space-y-2 text-gray-600">
+                            <li>24시간 커뮤니티 모니터링을 통한 안정화 및 위기 대응</li>
+                            <li>VOC 리포트 작성 및 유관사(퍼블리셔/개발사)와의 직접 소통</li>
+                            <li>Python/엑셀 기반 업무 효율화 툴 개발로 팀의 데이터 처리 속도 및 정확성 향상</li>
+                            <li><b>담당 게임:</b> 블레이드 키우기, 마법의 잉크, 퇴마검사 키우기, 데몬 헌터 키우기, 데빌 슬레이어, 별빛기사 키우기, 발키리 히어로 키우기, 임모탈 키우기, 루시퍼 키우기 등, 모비릭스 리뷰 관리</li>
+                        </ul>
+                    </div>
+                    <div class="mb-12 pl-10 relative timeline-item">
+                        <p class="text-sm text-gray-500 mb-1">2021.12 ~ 2022.11</p>
+                        <h3 class="text-2xl font-bold">㈜TLC</h3>
+                        <p class="text-lg text-gray-700 font-medium mb-4">운영기획실 | 팀장</p>
+                        <ul class="list-disc pl-5 space-y-2 text-gray-600">
+                            <li>CS팀장으로서 팀원 관리 및 업무 표준화(매뉴얼, 스크립트 제작) 주도</li>
+                            <li>VOC 데이터 분석 및 정기 리포트를 통해 실제 서비스 개선 및 패치에 기여</li>
+                            <li>CS 데이터 기반 유저 니즈 분석, 신규 이벤트 및 BM 기획안 제안</li>
+                        </ul>
+                    </div>
+                    <div class="pl-10 relative timeline-item">
+                        <p class="text-sm text-gray-500 mb-1">2017.08 ~ 2021.06</p>
+                        <h3 class="text-2xl font-bold">라인게임즈</h3>
+                        <p class="text-lg text-gray-700 font-medium mb-4">서비스파트 1팀 | 사원</p>
+                        <ul class="list-disc pl-5 space-y-2 text-gray-600">
+                            <li>멀티채널(인게임, 고객센터, 이메일) 고객 문의 응대 및 이슈 해결</li>
+                            <li>VOC 기반 유저 동향 분석 및 리포트, 서비스 안정화 근거 자료 제공</li>
+                            <li>CS팀 운영 효율화 (신규 입사자 가이드, 데이터 검색용 툴 제작)</li>
+                            <li><b>담당 게임:</b> 드래곤 플라이트, 데스티니 차일드, 주사위의 잔영, 엘브리사, 프렌즈런, 크리스탈 하츠, 스매시 레전드, 가디언 크로니클, 엑소스 히어로즈 등</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="portfolio" class="py-20">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h2 class="text-4xl font-bold">유저 소통 성공 사례</h2>
+                    <p class="text-lg text-gray-600 mt-2">문제 해결 능력과 위기 대응 능력을 보여주는 대표 사례입니다.</p>
+                </div>
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div class="bg-white rounded-lg p-6 flex flex-col card-hover shadow-sm border">
+                        <h3 class="text-xl font-bold mb-3">새벽 시간 서버 셧다운 위기 대응</h3>
+                        <p class="text-gray-600 flex-grow mb-4">갑작스러운 서버 다운으로 인한 커뮤니티 불만 폭주 상황에서, 신속하고 투명한 소통으로 유저 신뢰를 회복하고 긍정 여론을 이끌어냈습니다.</p>
+                        <button class="modal-open-btn mt-auto bg-[#AC0C0A] text-white font-bold py-2 px-4 rounded-lg hover:bg-[#8a0a08] transition-colors" data-modal="modal1">자세히 보기</button>
+                    </div>
+                    <div class="bg-white rounded-lg p-6 flex flex-col card-hover shadow-sm border">
+                        <h3 class="text-xl font-bold mb-3">아이템 오회수 실수에 대한 대처</h3>
+                        <p class="text-gray-600 flex-grow mb-4">업무상 실수로 인한 고객 불만을 신속한 인정과 정확한 후속 조치로 해결하고, 재발 방지 프로세스 공유를 통해 오히려 고객 신뢰를 회복했습니다.</p>
+                        <button class="modal-open-btn mt-auto bg-[#AC0C0A] text-white font-bold py-2 px-4 rounded-lg hover:bg-[#8a0a08] transition-colors" data-modal="modal2">자세히 보기</button>
+                    </div>
+                </div>
+                 <div class="text-center mt-16">
+                    <a href="https://www.notion.so/293d25256e1b80468a33c8e4aa07a733" target="_blank" class="bg-amber-500 text-gray-800 font-bold py-3 px-8 rounded-lg hover:bg-amber-600 transition-colors text-lg">
+                        <i class="fab fa-neos mr-2"></i>Notion 포트폴리오 전체 보기
+                    </a>
+                    <p class="text-gray-500 mt-3">업무 문서, 기획/분석 리포트, 개발한 툴 등 더 많은 자료를 확인하실 수 있습니다.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="achievements" class="py-20 bg-white">
+             <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h2 class="text-4xl font-bold">핵심 성과 요약</h2>
+                    <p class="text-lg text-gray-600 mt-2">저의 기여를 통해 이뤄낸 구체적인 개선점입니다.</p>
+                </div>
+                <div class="bg-white p-6 md:p-8 rounded-xl shadow-lg border border-gray-100">
+                    <div class="chart-container">
+                        <canvas id="achievementsChart"></canvas>
+                    </div>
+                </div>
+             </div>
+        </section>
+
+        <footer class="bg-gray-800 text-white py-8">
+            <div class="container mx-auto px-6 text-center">
+                <p>&copy; 2025 정광섭. All Rights Reserved.</p>
+            </div>
+        </footer>
+    </main>
+    
+    <div id="modal1" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center p-4 modal-backdrop z-50">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-2xl p-8 modal-content transform scale-95">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-2xl font-bold">사례 1: 서버 셧다운 위기 대응</h2>
+                <button class="modal-close-btn text-2xl">&times;</button>
+            </div>
+            <div class="space-y-4 text-left">
+                <div><h3 class="font-bold text-lg text-[#AC0C0A]">문제 상황 (Situation)</h3><p>새벽 시간대 특정 서버의 셧다운 문제로 관련 게임 플레이가 불가능해지며 커뮤니티 내 불만이 폭증했습니다.</p></div>
+                <div><h3 class="font-bold text-lg text-[#AC0C0A]">나의 행동 (Action)</h3><ul class="list-disc pl-5 mt-1"><li>신속하게 문제를 파악하고 유관 부서에 전파, 동시에 유저들에게 상황 인지 공지를 게시하여 1차적으로 안심시켰습니다.</li><li>운영팀과 지속적으로 소통하며 원인 및 예상 복구 시간을 파악하고, 이를 투명하게 유저들에게 중간 안내했습니다.</li><li>핫픽스 완료 후, 잔여 이슈나 추가 VOC를 선제적으로 수집하여 2차 문제 발생을 예방하고 안정화를 지원했습니다.</li></ul></div>
+                <div><h3 class="font-bold text-lg text-[#AC0C0A]">결과 (Result)</h3><p>신속하고 투명한 대응으로 유저들의 신뢰를 회복했으며, "대처가 빨라서 좋다", "소통하는 운영"이라는 긍정적인 피드백을 통해 커뮤니티 여론을 안정시켰습니다.</p></div>
+            </div>
+        </div>
+    </div>
+    <div id="modal2" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center p-4 modal-backdrop z-50">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-2xl p-8 modal-content transform scale-95">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-2xl font-bold">사례 2: 아이템 오회수 대응</h2>
+                <button class="modal-close-btn text-2xl">&times;</button>
+            </div>
+            <div class="space-y-4 text-left">
+                <div><h3 class="font-bold text-lg text-[#AC0C0A]">문제 상황 (Situation)</h3><p>유저에게 회수해야 할 특정 아이템이 아닌, 일반 아이템을 실수로 회수하는 업무상 오류가 발생했습니다.</p></div>
+                <div><h3 class="font-bold text-lg text-[#AC0C0A]">나의 행동 (Action)</h3><ul class="list-disc pl-5 mt-1"><li>1:1 문의 확인 즉시 내부 툴로 기록을 대조하여 오류를 파악하고, 즉시 정상적인 아이템을 회수 조치했습니다.</li><li>팀장에게 보고하여 오회수된 아이템의 신속한 재지급 절차를 진행했으며, 유저에게는 진심으로 사과하고 재발 방지를 약속했습니다.</li><li>해당 사례를 팀 전체에 공유하여 유사 실수가 재발하지 않도록 프로세스를 재점검하고 강화했습니다.</li></ul></div>
+                <div><h3 class="font-bold text-lg text-[#AC0C0A]">결과 (Result)</h3><p>실수를 빠르게 인정하고 정확한 후속 조치를 진행하여 고객의 불만을 해소했습니다. 나아가 재발 방지 프로세스까지 공유하여 회사의 대응에 대한 고객의 신뢰를 회복할 수 있었으며, 이를 통해 전체 CS팀의 업무 정확성 향상에 기여했습니다.</p></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            mobileMenuButton.addEventListener('click', () => { mobileMenu.classList.toggle('hidden'); });
+            
+            document.querySelectorAll('#mobile-menu a').forEach(link => {
+                link.addEventListener('click', () => mobileMenu.classList.add('hidden'));
+            });
+
+            const navLinks = document.querySelectorAll('.nav-link');
+            const sections = document.querySelectorAll('section');
+            const observerOptions = { root: null, rootMargin: '0px', threshold: 0.4 };
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        navLinks.forEach(link => {
+                            link.classList.remove('active');
+                            if (link.getAttribute('href').substring(1) === entry.target.id) {
+                                link.classList.add('active');
+                            }
+                        });
+                    }
+                });
+            }, observerOptions);
+            sections.forEach(section => { observer.observe(section); });
+
+            const achievementsCtx = document.getElementById('achievementsChart').getContext('2d');
+            const achievementsChart = new Chart(achievementsCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['CS팀 응대 품질 상향 평준화', '팀 데이터 처리 속도/정확성 향상', '서비스 개선 및 패치 기여', '신규 입사자 온보딩 기간 단축', '고객 만족도 제고'],
+                    datasets: [{
+                        label: '기여도',
+                        data: [90, 85, 80, 75, 95],
+                        backgroundColor: 'rgba(172, 12, 10, 0.7)',
+                        borderColor: 'rgba(172, 12, 10, 1)',
+                        borderWidth: 1,
+                        borderRadius: 5,
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: { x: { beginAtZero: true, max: 100, ticks: { display: false } }, y: { ticks: { font: { size: 14 } } } },
+                    plugins: { legend: { display: false }, tooltip: { enabled: true, backgroundColor: '#333', titleFont: { size: 14 }, bodyFont: { size: 12 }, padding: 10, displayColors: false } }
+                }
+            });
+
+            const modalOpenButtons = document.querySelectorAll('.modal-open-btn');
+            const modalCloseButtons = document.querySelectorAll('.modal-close-btn');
+            const openModal = (modal) => {
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+                setTimeout(() => {
+                    modal.querySelector('.modal-backdrop')?.classList.add('opacity-100');
+                    const content = modal.querySelector('.modal-content');
+                    if (content) {
+                        content.classList.add('scale-100');
+                        content.classList.remove('scale-95');
+                    }
+                }, 10);
+            };
+            const closeModal = (modal) => {
+                modal.querySelector('.modal-backdrop')?.classList.remove('opacity-100');
+                const content = modal.querySelector('.modal-content');
+                if (content) {
+                    content.classList.remove('scale-100');
+                    content.classList.add('scale-95');
+                }
+                setTimeout(() => {
+                    modal.classList.add('hidden');
+                    modal.classList.remove('flex');
+                }, 300);
+            };
+            modalOpenButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const modal = document.getElementById(button.dataset.modal);
+                    if (modal) openModal(modal);
+                });
+            });
+            modalCloseButtons.forEach(button => {
+                const modal = button.closest('.modal-backdrop');
+                if(modal) button.addEventListener('click', () => closeModal(modal));
+            });
+            document.querySelectorAll('.modal-backdrop').forEach(modal => {
+                modal.addEventListener('click', (e) => {
+                    if(e.target === modal) closeModal(modal);
+                });
+            });
+        });
+    </script>
+</body>
+</html>
+
+
+
